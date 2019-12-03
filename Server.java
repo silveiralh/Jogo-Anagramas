@@ -173,6 +173,7 @@ public class Server {
                                 tentativas += s + " - ";
                             } else {
                                 tentativas += s + " - ";
+                                vidas--;
                             }
 
                         }
@@ -198,7 +199,7 @@ public class Server {
                                 if (jogadorAtual == (qtdJogadores))
                                     jogadorAtual = 0;
                                 String newMsg = "R" + String.valueOf(jogadorAtual) + String.valueOf(vidas)
-                                        + anagramasCorretos + triedLetters;
+                                        + anagramasCorretos + tentativas;
                                 SendMessage(newMsg);// envia mensagem com cada posição representando uma informação
                                 System.out.println("JOGADOR ERROU O PALPITE");
                             }

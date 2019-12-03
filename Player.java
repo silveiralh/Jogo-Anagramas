@@ -38,7 +38,7 @@ public class Player {
         System.out.println(" ");
         System.out.println("VIDAS: " + vidasRestantes);
         System.out.println(" ");
-        System.out.println("CARACTERES: " + word);
+        System.out.println("CARACTERES: " +  );
         System.out.println(" ");
         System.out.print("TENTATIVAS: ");
         String l = tentativasAnagramas;
