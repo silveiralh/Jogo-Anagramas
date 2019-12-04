@@ -38,7 +38,7 @@ public class Player {
         System.out.println(" ");
         System.out.println("VIDAS: " + vidasRestantes);
         System.out.println(" ");
-        System.out.println("CARACTERES: " +  );
+        System.out.println("CARACTERES: "  +word );
         System.out.println(" ");
         System.out.print("TENTATIVAS: ");
         String l = tentativasAnagramas;
@@ -123,10 +123,12 @@ public class Player {
                 System.out.println("|   -   ||       ||   -   ||  |__| ||     < |   -   ||       ||   -   ||__     |");
                 System.out.println("|___|___||__|____||___|___||_______||___|__||___|___||__|_|__||___|___||_______|");
                 System.out.println("################################################################################");
+                System.out.println("################################################################################ ");
+                System.out.println("################# ID JOGADOR: " + ID+ "                 ################################");
+                System.out.println("#################                               ################################ ");
+                System.out.println("################# AGUARDANDO O INICIO DO JOGO   ################################");
+                System.out.println("################################################################################ ");
                 System.out.println(" ");
-                System.out.println("ID JOGADOR: " + ID);
-                System.out.println(" ");
-                System.out.println("AGUARDANDO O INICIO DO JOGO");
 
             }
             else
@@ -142,8 +144,8 @@ public class Player {
 
                 if(msg.startsWith("R"))  //RESPOSTA
                 {
-                    word = msg.substring(3, 3 + word.length());
-                    DrawGame(msg.charAt(2), msg.substring(3 + word.length()));
+                    word = msg.substring(3, 32 );
+                    DrawGame(msg.charAt(2), msg.substring(3+ word.length()));
 
                     if(msg.charAt(1) == ID)
                     {
@@ -170,7 +172,7 @@ public class Player {
                     {
                         System.out.println("DERROTA");
                     }
-                    System.out.println("A PALAVRA ERA: " + msg.substring(2));
+                    System.out.println("ESTAS SAO TODAS AS OPCOES DE ANAGRAMAS: " + msg);
                     break;
                 }
                 else if(msg.startsWith("S"))  //START GAME
