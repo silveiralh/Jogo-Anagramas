@@ -10,11 +10,10 @@ public class Server {
     InetAddress[] playerIps = new InetAddress[qtdJogadores];
     int[] playerPorts = new int[qtdJogadores];
 
-    String word;
-    String discoveredWord = "";
     String anagramasCorretos = "";
-    String sequenciaCaracteres = "A - S - A - O - O - R - S";
+    String sequenciaCaracteres = "A - S - A - O - O - R - S - M";
     String solucao = "";
+    int pontos=0;
 
     String triedLetters = "";
     String tentativas = "";
@@ -82,43 +81,23 @@ public class Server {
             System.out.println("USAGE: Server <NUMERO DA SEQUENCIA DE CHAR>");
             System.exit(0);
         }
-
-        Server g = new Server();
-        g.StartServer(args[0]);
-    }
-
-    public void StartServer(String arg) {
-        if (arg.equals(1)) {
-            String solucao = "AMA - AMO - AOS - ARO - ASA - MAO - MAR - MAS - MOR - MOS - ORA -"
+        String solucao = "AMA - AMO - AOS - ARO - ASA - MAO - MAR - MAS - MOR - MOS - ORA -"
                     + " RAS - SAO - SAS - SOM - SOS - AMAR - AMAS - AMOR - AMOS - ARMA - AROS - ASMA - MAOS - "
                     + "ORAS - OSSO - RAMO - RASA - RASO - ROMA - ROSA - SOAR - SORO - AMORA - ARMAS - AROMA - ASSAR - MASSA - MORSA"
                     + "RAMOS - RASAS - RASOS - ROMAS - ROSAS - SOMAR - SOROS - AMAROS - AMORAS - AROMAS"
                     + "ASSOAR - MORSAS - AMOROSA - MOROSAS - AMOROSAS - ASSOMAR";
-        }
+        Server g = new Server();
+        g.StartServer(solucao);
+    }
 
-        // word = arg.toUpperCase();
-
-        // for (int i = 0; i < solucao.length; i++) {
-
-        // if(!IsValid(word.charAt(i)))
-        // {
-        // System.out.println("A palavra deve conter apenas letras");
-        // System.exit(0);
-        // }
-
-        // }
+    public void StartServer(String arg) {
         try {
 
             // Inicia o server na porta 12345
             ServerSocket server = new ServerSocket(12345);
-
-            // for (int i = 0; i < word.length(); i++) {////////////////////
-            // discoveredWord += "*";
-            // }
-
             int contadorJogadores = 0;
             int jogadorAtual = 0;
-            int vidas = 3;
+            int vidas = 9;
             Boolean jogoEmAndamento = false;
 
             System.out.println("\nSERVIDOR INICIALIZADO");
@@ -134,7 +113,7 @@ public class Server {
 
                 if (msg.startsWith("C")) // CONECTAR SE O PRIMEIRO CHAR FOR C
                 {
-                    System.out.println("ALGUEM ESTA TENTANDO SE CONECTAR");
+                    System.out.println("CONECTANDO JOGADOR");
                     if (contadorJogadores == qtdJogadores) {
                         SendMessage(client_socket.getLocalAddress().toString(), client_socket.getLocalPort(), "X");
                         System.out.println("NUMERO MAXIMO DE JOGADORES ATINGIDO"); // nao permite adicionar novo jogador
@@ -148,83 +127,57 @@ public class Server {
                         contadorJogadores++;
                         System.out.println("JOGADOR ADICIONADO: " + contadorJogadores + "/" + qtdJogadores);
                         if (contadorJogadores == qtdJogadores) {
-                            s = "S" + String.valueOf(jogadorAtual) + String.valueOf(vidas) + discoveredWord;
+                            s = "S" + String.valueOf(jogadorAtual) + String.valueOf(vidas) + anagramasCorretos;
                             SendMessage(s);
                             jogoEmAndamento = true;// inicia o jogo ja que possui todos os jogadores aguardando
                             System.out.println("\nINICIANDO PARTIDA");
                         }
                     }
 
-                } else if (msg.startsWith("J")) // JOGADA SE O PRIMEIRO CHAR FOR J
-                {
+                } 
+                
+                else if (msg.startsWith("J")){ // JOGADA SE O PRIMEIRO CHAR FOR J
+                
                     System.out.println("JOGADOR " + jogadorAtual + " ESTA TENTANDO ADIVINHAR UM ANAGRAMA");
                     String s = msg.substring(1).toUpperCase();
-                    if (s.length() > 1) // verifica a palavra inserida
-                    {
-                        // //////////////////////
                         System.out.println("TENTATIVA: " + s);
                         if (tentativaRepetida(s)) {
                             SendMessage(jogadorAtual, "TENTATIVA REPETIDA");
                             System.out.println("TENTATIVA REPETIDA");
-                        } else {
-
-                            if (solucao.contains(s)) {
+                        }
+                            System.out.println("POSICAO NA STRING:"+arg.indexOf(s));
+                            if (arg.indexOf(s)>=0) {
                                 anagramasCorretos += s + " - ";
                                 tentativas += s + " - ";
+                                pontos++;
                             } else {
                                 tentativas += s + " - ";
+                                System.out.println("JOGADOR ERROU O CHUTE");
                                 vidas--;
                             }
-
-                        }
-
-                        /////////////////////
-                        if (s.equals(word)) // WIN
-                        {
-                            SendMessage("EW" + word);
-                            System.out.println("JOGADOR ACERTOU A PALAVRA!!");
-                            System.out.println("\nOS JOGADORES GANHARAM A PARTIDA");
-                            break;
-                        } else {
-                            vidas--;
+                
                             System.out.println("VIDAS: " + vidas);
-                            if (vidas <= 0)// END GAME - LOSE
+                            if (vidas <= 0)// fim de jogo - derrota
                             {
-                                SendMessage("EL" + word);
+                                SendMessage("FD" + arg);
                                 System.out.println("ACABARAM AS VIDAS");
                                 System.out.println("\nOS JOGADORES PERDERAM A PARTIDA");
                                 break;
-                            } else {
+                            }else if(pontos>=10){//fim de jogo - vitoria
+                                SendMessage("FV" + arg);
+                                System.out.println("\nOS JOGADORES GANHARAM A PARTIDA");
+                                break;
+                            }                             
+                            else {
                                 jogadorAtual++;
                                 if (jogadorAtual == (qtdJogadores))
                                     jogadorAtual = 0;
                                 String newMsg = "R" + String.valueOf(jogadorAtual) + String.valueOf(vidas)
-                                        + anagramasCorretos + tentativas;
+                                        + sequenciaCaracteres + anagramasCorretos ;
                                 SendMessage(newMsg);// envia mensagem com cada posição representando uma informação
-                                System.out.println("JOGADOR ERROU O PALPITE");
+                                System.out.println("JOGADOR ACERTOU UM ANAGRAMA");
+                                System.out.println("PONTUACAO: "+pontos);
                             }
-
-                        }
-                    } else // TESTA A LETRA
-                    {
-
-                        
-
-                        if (vidas <= 0)// END GAME - LOSE
-                        {
-                            SendMessage("EL" + word);
-                            System.out.println("ACABARAM AS VIDAS");
-                            System.out.println("\nOS JOGADORES PERDERAM A PARTIDA");
-                            // break;
-                        } else if (discoveredWord.equals(word)) // END GAME - WIN
-                        {
-                            SendMessage("EW" + word);
-                            System.out.println("JOGADOR ACERTOU A PALAVRA!!");
-                            System.out.println("\nOS JOGADORES GANHARAM A PARTIDA");
-                            break;
-                        }
-
-                    }
 
                 }
 
