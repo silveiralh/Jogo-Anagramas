@@ -3,7 +3,7 @@ import java.io.*;
 
 public class Server {
 
-    private static final int qtdJogadores = 1;
+    private static final int qtdJogadores = 2;
 
     int port = 12345;
 
