@@ -15,8 +15,6 @@ public class Server {
     String solucao = "";
     int pontos=0;
 
-    String triedLetters = "";
-    String tentativas = "";
 
     void SendMessage(int id, String msg) {
 
