@@ -58,14 +58,6 @@ public class Server {
 
     }
 
-    Boolean IsValid(char letter) {
-        for (int i = 65; i < 91; i++) {
-            if (letter == (char) i)
-                return true;
-        }
-        return false;
-    }
-
     Boolean tentativaRepetida(String palavra) {
         if (!tentativas.contains(palavra)) {
             return false;
